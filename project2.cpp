@@ -15,9 +15,6 @@ Instructions:
 //#include <Windows.h>
 
 #define MAX_ARRAY_SIZE 40
-#define INPUT_FILE "Coin1.txt"
-//#define MIN_ELEMENT -5
-//#define MAX_ELEMENT 15
 
 using namespace std;
 
@@ -29,17 +26,17 @@ struct results {
 ////////////////////////////////////////////
 // Function Prototypes
 ////////////////////////////////////////////
-void output(int* array, int arrSize, int sum, int startIdx, int endIdx, int algNo);
+void output(int* array, int arraySize, int toChange, string out, string algName);
 int inputFileLineCount(string inputFile);
-void parseInputFile(int lineCount, string inputFileName);
+void parseInputFile(int lineCount, string inputFileName, string outputFileName);
 string createOutputFile(string inputFile);
 
-void testRunTime();
+void testRunTime(); // Not yet implemented.
 
 ////////////////////////////////////////////
 // Algorithm Prototypes
 ////////////////////////////////////////////
-results changeslow(int v[], int size, int a);
+results changeslow(int v[], int size, int a); // Not yet implemented.
 results changegreedy(int v[], int size, int a);
 results changedp(int v[], int size, int a);
 
@@ -65,7 +62,7 @@ int main(int argc, char *argv[])
 	// Create the output file by inserting "change" into the input file name. 	
 	outputFileName = createOutputFile(inputFileName);	
 		
-	parseInputFile(inputFileLineCount(inputFileName), inputFileName);
+	parseInputFile(inputFileLineCount(inputFileName), inputFileName, outputFileName);
 
 	return 0;
 }
@@ -73,6 +70,32 @@ int main(int argc, char *argv[])
 ////////////////////////////////////////////
 //START - Programs
 ////////////////////////////////////////////
+
+////////////////////////////////////////////
+//	output
+//	- 
+////////////////////////////////////////////
+void output(int* array, int arraySize, int toChange, string fileOut, string algName)
+{
+	ofstream out;
+
+	results resOut;
+	resOut = changegreedy(array, arraySize, toChange);
+    
+    out.open(fileOut.c_str(), ofstream::out | ofstream::app);
+
+	// This will produce the desired format for the output.
+	int i;
+	out << "\nAlgorithm " << algName << ":\n[";
+	for (i = 0; i < resOut.coins.size() - 1; i++)
+	{
+		out << resOut.coins[i] << ", ";
+	}
+	out << resOut.coins[i];
+	out << "]\n" << resOut.numCoins << endl;			
+
+	out.close();
+}
 
 ////////////////////////////////////////////
 //	inputFileLineCount
@@ -99,6 +122,7 @@ int inputFileLineCount(string inputFileName)
 
 	return lineCount;
 }
+
 ////////////////////////////////////////////
 // 	parseInputFile
 //	- Is THE function called that is used for grading
@@ -106,7 +130,7 @@ int inputFileLineCount(string inputFileName)
 //	- Crunches the sum for all  algorithms
 //	- Outputs the result onto the screen AND  
 ////////////////////////////////////////////
-void parseInputFile(int lineCount, string inputFileName)
+void parseInputFile(int lineCount, string inputFileName, string outputFileName)
 {
 	// Array on every other line.
 	int arrayCount = lineCount / 2;
@@ -163,8 +187,8 @@ void parseInputFile(int lineCount, string inputFileName)
 		}
 		inputFile.close();
 
-		// Run algorithms on V[i][] and arraySize[i], for amounts A[i] here.
-
+		
+		// DELETE THIS BLOCK LATER used for testing.
 		for (int k = 0; k < arrayCount; k++)
 		{
 			for (int l = 0; l < arraySize[k]; l++)
@@ -174,22 +198,34 @@ void parseInputFile(int lineCount, string inputFileName)
 			cout << "\tSize: " << arraySize[k];
 			cout << "\n" << A[k] << endl;
 		}
-		/*results resOut;
-		for (int k = 0; k < lineCount; k++)
+		// END DELETE BLOCK
+		
+
+		// Run algorithms on V[i][] and arraySize[i], for amounts A[i] here.
+		results resOut; // delete later. Output is now calling the algorithms.
+		int m; // delete later.
+		for (int k = 0; k < arrayCount; k++)
 		{
-			resOut = mssAlgorithm1(A[k], arraySize[k]);
-			output(A[k], arraySize[k], resOut.sum, resOut.startIdx, resOut.endIdx, 1);
+		// Run output on each algorithm here.
+		output(V[k], arraySize[k], A[k], outputFileName, "greedy");
 
-			resOut = mssAlgorithm2(A[k], arraySize[k]);
-			output(A[k], arraySize[k], resOut.sum, resOut.startIdx, resOut.endIdx, 2);
 
-			// Alg 3 should always start at index 0, right?
-			resOut = mssAlgorithm3(A[k], 0, arraySize[k] - 1);		
-			output(A[k], arraySize[k], resOut.sum, resOut.startIdx, resOut.endIdx, 3);
+        // DELETE THIS BLOCK LATER used for testing
+			// Run the algorithm.
+			resOut = changegreedy(V[k], arraySize[k], A[k]);
+			
+			// This will produce the desired format for the output.
+			cout << "\nAlgorithm changegreedy:\n["; 
+			for (m = 0; m < resOut.coins.size() - 1; m++)
+			{
+				cout << resOut.coins[m] << ", ";
+			}
+			cout << resOut.coins[m];
+			cout << "]\n" << resOut.numCoins << endl;
 
-			resOut = mssAlgorithm4(A[k], arraySize[k]);
-			output(A[k], arraySize[k], resOut.sum, resOut.startIdx, resOut.endIdx, 4);
-		}*/
+		// END DELETE BLOCK
+
+		}
 	}
 
 	else
