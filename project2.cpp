@@ -10,8 +10,10 @@ Instructions:
 #include <string>
 #include <algorithm>
 #include <ctime>
+#include <cmath>
 #include <cstdlib>
 #include <deque>
+#include <climits>
 //#include <Windows.h>
 
 #define MAX_ARRAY_SIZE 40
@@ -274,7 +276,50 @@ string createOutputFile(string inputFile)
 ////////////////////////////////////////////
 results changeslow(int v[], int size, int a)
 {
-
+	int min_sum = INT_MAX;
+	results r;
+	r.numCoins = 0;
+	
+	if(a == 0)//Never going to happen, but just in case
+	{
+		r.coins.push_back(0);
+		return r;
+	}
+	else
+	{	//Base Case
+		for(int i = 0; i < size; i++)
+		{
+			if(v[i] == a)
+			{
+				r.numCoins = 1;
+				r.coins.push_back(a);
+				return r;
+			}
+		}
+	}
+	
+	//Recursive Case
+	for(int j = a-1; j >= a / 2; j--)
+	{
+		results rLow;
+		results rHigh;
+		//minimum number of coins to make a-j cents
+		rLow = changeslow(v, size, (a-j) );
+		//minimum number coins to make j cents
+		rHigh = changeslow(v, size, j);
+		
+		int sum = rLow.coins.size() + rHigh.coins.size();
+		
+		if(min_sum > sum)
+		{
+			r.numCoins = sum;
+			deque<int>::iterator it = rLow.coins.begin();
+			++it;
+			rLow.coins.insert(it,rHigh.coins.begin(), rHigh.coins.end());
+			r.coins = rLow.coins;
+		}
+	}
+	return r;
 }
 
 ////////////////////////////////////////////
