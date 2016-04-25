@@ -26,6 +26,37 @@ struct results {
 
 results changegreedy(int v[], int size, int a);
 results changedp(int v[], int size, int a);
+results changeslow(int v[], int size, int a);
+
+results changeslow(int v[], int size, int a)
+{  
+    
+        results m;
+	results r;
+	r.numCoins = 0;
+        
+        for(int i = 0; i < size; i++)
+        {
+            r.coins.push_back(0);
+        }
+	
+        if(a == 0)
+        {
+            return r;
+        }
+        
+	for(int j = 0; j < size; j++)
+	{
+            if(v[j] <= a)
+            {
+                m = changeslow(v, size, a - v[j]);
+                r.coins[j] = m.coins[j] + 1;
+                r.numCoins = m.numCoins + 1;
+            }
+	}
+          
+        return r;
+}
 
 results changegreedy(int v[], int size, int a)
 {
