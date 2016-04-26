@@ -28,7 +28,7 @@ struct results {
 ////////////////////////////////////////////
 // Function Prototypes
 ////////////////////////////////////////////
-void output(int* array, int arraySize, int toChange, string out, string algName);
+void output(int* array, int arraySize, int toChange, string out, int algNo);
 int inputFileLineCount(string inputFile);
 void parseInputFile(int lineCount, string inputFileName, string outputFileName);
 string createOutputFile(string inputFile);
@@ -75,15 +75,30 @@ int main(int argc, char *argv[])
 
 ////////////////////////////////////////////
 //	output
-//	- 
+//	- Prints the results of the selected algorithm to a file.
 ////////////////////////////////////////////
-void output(int* array, int arraySize, int toChange, string fileOut, string algName)
+void output(int* array, int arraySize, int toChange, string fileOut, int algNo)
 {
 	ofstream out;
 
 	results resOut;
-	resOut = changegreedy(array, arraySize, toChange);
-    
+	string algName;
+	
+	// Select which algorithm to run base on algNo.
+	switch (algNo)
+	{
+		case 1:		resOut = changeslow(array, arraySize, toChange);
+					algName = "changeslow";
+					break;
+
+		case 3:		resOut = changedp(array, arraySize, toChange);
+					algName = "changedp";
+					break;
+
+		default:	resOut = changegreedy(array, arraySize, toChange);
+					algName = "changegreedy";				
+		
+    }
     out.open(fileOut.c_str(), ofstream::out | ofstream::app);
 
 	// This will produce the desired format for the output.
@@ -187,46 +202,15 @@ void parseInputFile(int lineCount, string inputFileName, string outputFileName)
 				j = 0;				
 			}			
 		}
-		inputFile.close();
+		inputFile.close();		
 
-		
-		// DELETE THIS BLOCK LATER used for testing.
+		// Run algorithms on V[i][] and arraySize[i], for amounts A[i] here.		
 		for (int k = 0; k < arrayCount; k++)
 		{
-			for (int l = 0; l < arraySize[k]; l++)
-			{
-				cout << V[k][l] << "\t";
-			}
-			cout << "\tSize: " << arraySize[k];
-			cout << "\n" << A[k] << endl;
-		}
-		// END DELETE BLOCK
-		
-
-		// Run algorithms on V[i][] and arraySize[i], for amounts A[i] here.
-		results resOut; // delete later. Output is now calling the algorithms.
-		int m; // delete later.
-		for (int k = 0; k < arrayCount; k++)
-		{
-		// Run output on each algorithm here.
-		output(V[k], arraySize[k], A[k], outputFileName, "greedy");
-
-
-        // DELETE THIS BLOCK LATER used for testing
-			// Run the algorithm.
-			resOut = changegreedy(V[k], arraySize[k], A[k]);
-			
-			// This will produce the desired format for the output.
-			cout << "\nAlgorithm changegreedy:\n["; 
-			for (m = 0; m < resOut.coins.size() - 1; m++)
-			{
-				cout << resOut.coins[m] << ", ";
-			}
-			cout << resOut.coins[m];
-			cout << "]\n" << resOut.numCoins << endl;
-
-		// END DELETE BLOCK
-
+			// Run output on each algorithm here.
+			//output(V[k], arraySize[k], A[k], outputFileName, 1); // 1 for slow.
+			output(V[k], arraySize[k], A[k], outputFileName, 2); // 2 for greedy.
+			output(V[k], arraySize[k], A[k], outputFileName, 3); // 3 for dp.
 		}
 	}
 
