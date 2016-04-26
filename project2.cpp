@@ -347,16 +347,64 @@ results changegreedy(int v[], int size, int a)
 ////////////////////////////////////////////
 results changedp(int v[], int size, int a)
 {
-    results r;
-    int table[a + 1][size];
-    
-    for(int i = 0; i < size; i++)
-    {
-        r.coins.push_back(0);
-    }
-    
-    for(int i = 0; i <= size; i++)
-    {
-        table[0][i] = 1;
-    }    
+	int T[a + 1][size]; // Number of each coin for a given amount, a.
+	int m[a + 1]; // Minimum number of total coins for a given amount, a.
+
+	// Initialize all T[n][p] to zeroes, and m[n] to n.	
+	for (int n = 0; n < a + 1; n++)
+	{
+		for (int p = 0; p < size; p++)
+		{
+			T[n][p] = 0;
+		}
+		m[n] = n;
+	}
+
+	int sum, coin, remainder;
+	// Outer loop will calculate m for each value of a.
+	for (int i = 1; i < a + 1; i++)
+	{
+		// Inner loop will calculate the number of each coin.
+		for (int j = 0; j < size; j++)
+		{
+			if (i >= v[j]) // Don't even bother if the coin is too large.
+			{
+				coin = 1; // Try one coin first.
+				remainder = i;
+				while (remainder >= v[j]) // Go until too many coins.
+				{
+					// Whatever is left over will have a value in T[][] and an m[].
+					remainder = i - coin * v[j];
+
+					// This many coins plus the remainder might be optimum.
+					sum = coin + m[remainder];
+
+					// If that's the case, fill in m[] and T[][].
+					if (sum <= m[i])
+					{
+						m[i] = sum;
+
+						// Copy the remainder's array first.
+						for (int k = 0; k < size; k++)
+						{
+							T[i][k] = T[remainder][k];
+						}
+						// Then, add coin in the appropriate spot.
+						T[i][j] = T[i][j] + coin;
+					}
+					coin++;
+				}
+			}
+		}
+	}
+
+	results r;
+	r.numCoins = m[a];
+
+	for (int i = 0; i < size; i++)
+	{
+		r.coins.push_back(T[a][i]);
+	}
+	
+	retrun r;
 }
