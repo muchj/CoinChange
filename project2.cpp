@@ -406,5 +406,5 @@ results changedp(int v[], int size, int a)
 		r.coins.push_back(T[a][i]);
 	}
 	
-	retrun r;
+	return r;
 }
