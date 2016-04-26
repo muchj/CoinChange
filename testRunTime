@@ -1,0 +1,66 @@
+////////////////////////////////////////////
+//	testRunTime
+//	- Used for algorithm analysis.
+////////////////////////////////////////////
+void testRunTime()
+{
+	// Seed the random generator.
+	unsigned seed;
+	seed = time(0);
+	srand(seed);
+
+	// User selects which algorithm to run.	
+	cout << "\nWhich algorithm do you wish to test? (1, 2, 3, or 4) ";
+	int algorithmNumber;
+	cin >> algorithmNumber;
+
+	// User selects the number of array elements.
+	cout << "\nHow many elements in the array? ";
+	unsigned long numberOfElements;
+	cin >> numberOfElements;
+
+	// Create the array.
+	int A[numberOfElements];
+
+	// Assign random integers to the array.
+	for (unsigned long i = 0; i < numberOfElements; i++)
+	{
+		A[i] = rand() % (MAX_ELEMENT - MIN_ELEMENT + 1) - MIN_ELEMENT; 
+	}
+
+	//clock_t t;
+	results testTime;
+
+	// Time the chosen algorithm.
+	//t = clock();
+
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER t1, t2;
+	double elapsedTime;
+
+	QueryPerformanceFrequency(&frequency);
+	QueryPerformanceCounter(&t1);
+	switch (algorithmNumber) // 1 extra calculation shouldn't hurt the results.
+	{
+		case 1:	testTime = mssAlgorithm1(A, numberOfElements);
+				break;
+
+		case 2:	testTime = mssAlgorithm2(A, numberOfElements);
+				break;
+
+		case 3:	testTime = mssAlgorithm3(A, 0, numberOfElements - 1);
+				break;
+
+		default: testTime = mssAlgorithm4(A, numberOfElements);
+				 algorithmNumber = 4;
+	}
+	//t = clock() - t;
+	QueryPerformanceCounter(&t2);
+
+	elapsedTime = (t2.QuadPart - t1.QuadPart) * 1000.0 / frequency.QuadPart;
+
+	// Report the results.
+	cout << endl << numberOfElements << " array elements took " << elapsedTime; //t;
+	cout << " micro seconds to process with algorithm " << algorithmNumber;
+	cout << ". " /*<< ((float)t)/CLOCKS_PER_SEC*/ << "\n\n";
+}
