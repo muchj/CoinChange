@@ -228,7 +228,7 @@ void parseInputFile(int lineCount, string inputFileName, string outputFileName)
 			r = changegreedy(V[k], arraySize[k], A[k]);
 			output(V[k], arraySize[k], r.numCoins, r.coins, "changegreedy", outputFileName); // 2 for greedy.
                         r = changedp(V[k], arraySize[k], A[k]);
-			output(V[k], arraySize[k], r.numCoins, r.coins, "changebd", outputFileName); // 3 for dp.
+			output(V[k], arraySize[k], r.numCoins, r.coins, "changedp", outputFileName); // 3 for dp.
 		}
 	}
 
